@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# wall=$(find ~/Images/ -type f -name "*.jpg" -o -name "*.png" | shuf -n 1)
+# Add wallpaper
+
+wall=/home/vcangel/Images/1-round.jpg
+xwallpaper --focus $wall
+
+# Generate color scheme
+wal -c
+wal -i $wall
+
+xdotool key super+F5
+
+# Firefox color scheme
+# Needs pywalfox installed
+pywalfox update
