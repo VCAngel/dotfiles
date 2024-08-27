@@ -3,6 +3,7 @@ clamav
 cmatrix
 deno
 fastfetch
+firefox
 git
 github-cli
 htop
@@ -25,6 +26,11 @@ unzip
 zathura
 zsh
 
+# Hardware control
+brightnessctl
+wireplumber
+pipewire
+
 # Fonts
 noto-fonts-emoji
 noto-fonts-cjk
@@ -43,3 +49,11 @@ xcb-util
 xcompmgr
 xdotool
 xwallpaper
+
+## AUR packages
+# paru
+# xkb-switch
+# discord
+# google-chrome
+# snapd
+# trickle
