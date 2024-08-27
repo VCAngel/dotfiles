@@ -1,0 +1,59 @@
+catimg
+clamav
+cmatrix
+deno
+fastfetch
+firefox
+git
+github-cli
+htop
+btop
+lolcat
+lua
+vim
+neovim
+networkmanager
+nftables
+nodejs
+npm
+openssh
+python
+ranger
+ruby
+semver
+tmux
+unzip
+zathura
+zsh
+
+# Hardware control
+brightnessctl
+wireplumber
+pipewire
+
+# Fonts
+noto-fonts-emoji
+noto-fonts-cjk
+ttf-fira-code
+ttf-jetbrains-mono
+ttf-jetbrains-mono-nerd
+ttf-joypixels
+ttf-liberation
+ttf-nerd-fonts-symbols
+ttf-nerd-fonts-symbols-common
+
+# xorg
+xorg
+xinit
+xcb-util
+xcompmgr
+xdotool
+xwallpaper
+
+## AUR packages
+# paru
+# xkb-switch
+# discord
+# google-chrome
+# snapd
+# trickle

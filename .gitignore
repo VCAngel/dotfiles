@@ -1,3 +1,4 @@
+# LUA
 # Compiled Lua sources
 luac.out
 
@@ -39,3 +40,14 @@ luac.out
 *.x86_64
 *.hex
 
+# MISC
+.vscode
+tt.*
+.tests
+doc/tags
+debug
+.repro
+foo.*
+*.log
+data
+lazy-lock.json
