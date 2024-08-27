@@ -11,6 +11,7 @@ btop
 lolcat
 lua
 vim
+make
 neovim
 networkmanager
 nftables
@@ -57,3 +58,7 @@ xwallpaper
 # google-chrome
 # snapd
 # trickle
+
+## Python packages
+# pip
+# pywal
