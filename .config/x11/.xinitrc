@@ -37,7 +37,7 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
 fi
 
 # This will start dwm
-/home/vcangel/.local/bin/newlook &
+newlook &
 xcompmgr &
 dwmblocks &
 setxkbmap -layout us,latam &
