@@ -39,6 +39,9 @@ if [[ ! "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
   exit 1
 fi
 
+# Export the VCA_DOTFILES variable (until reboot)
+export VCA_DOTFILES="$(pwd)"
+
 # Setup config files
 VCA_DOTFILES="$(pwd)"
 BACKUP_SUFFIX="pre-vca"
@@ -90,6 +93,9 @@ for file in "$NVIM_SRC"/*; do
   backup_if_exists "$NVIM_DEST/$base_file"
   cp -r "$file" "$NVIM_DEST/"
 done
+
+# Append "alias newlook=$VCA_DOTFILES/.local/bin/newlook" to ./config/omz/custom/aliases.zsh
+echo "alias newlook=$VCA_DOTFILES/.local/bin/newlook" >> "$OMZ_DEST/custom/aliases.zsh"
 
 # Copy OMZ files
 mkdir -p "$OMZ_DEST"
