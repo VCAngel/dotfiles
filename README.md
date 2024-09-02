@@ -27,8 +27,8 @@ create symbolic links to the files you want to use.
 Clone the repo:
 
 ```sh
-git clone https://github.com/VCAngel/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+git clone https://github.com/VCAngel/dotfiles.git ~/.vca_dotfiles
+cd ~/.vca_dotfiles
 ```
 
 If you want all the features, you can install the dependencies I use:
@@ -37,13 +37,24 @@ If you want all the features, you can install the dependencies I use:
 ./install_packages.sh
 ```
 
-Then, create the symbolic links:
+Then, create the symbolic links and copy necessary files:
 
 ```sh
 ./install.sh
 ```
 
-**CAUTION**: This will override your current configuration files! So use it with care! ( ˙▿˙ )
+**CAUTION**: This will create a backup of your current configuration files (`.pre-vca`) 
+and use the contents from my dotfiles.
+
+### Revert installation (⌒_⌒;)
+
+If you wish to revert installation and restore your previous configuration files, you can run:
+
+```sh
+./revert.sh
+```
+
+This script **will** use the backup files created during the installation process. Any `.pre-vca` files will be restored and the backup files will be deleted.
 
 ## Contact ( ´ ▽ ` )
 

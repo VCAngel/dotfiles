@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# wall=$(find ~/Images/ -type f -name "*.jpg" -o -name "*.png" | shuf -n 1)
+# wall=$(find $HOME/imgs/ -type f -name "*.jpg" -o -name "*.png" | shuf -n 1)
 # Add wallpaper
 
-wall=/home/vcangel/Images/1-round.jpg
+wall=$HOME/vca-imgs/1-round.jpg
 xwallpaper --focus $wall
 
 # Generate color scheme
