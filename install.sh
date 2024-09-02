@@ -107,7 +107,7 @@ for file in "$TMUXINATOR_SRC"/*; do
   cp -r "$file" "$TMUXINATOR_DEST/"
 done
 
-mkdir -p "$IMAGE_DEST"
+mkdir -p "$IMAGES_DEST"
 for file in "$IMAGES_SRC"/*; do
   base_file=$(basename "$file")
   backup_if_exists "$IMAGES_DEST/$base_file"
