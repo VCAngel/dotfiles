@@ -30,7 +30,7 @@ fi
 # Display a message
 echo "Preparing dotfiles!..."
 
-echo "Any existing configuration files will be backed up (.pre-vca suffix) and replaced with my dotfiles!\n"
+printf "Any existing configuration files will be backed up (.pre-vca suffix) and replaced with my dotfiles!\n"
 
 echo "Do you want to continue? [y/N]"
 read response
