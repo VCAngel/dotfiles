@@ -61,7 +61,7 @@ if [[ "$ohmyzsh_response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZDOTDIR:-$HOME}/omz/plugins/zsh-syntax-highlighting
 
   ## ZSH Autosuggestions
-  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZDOTDIR:-$HOME}omz/plugins/zsh-autosuggestions
+  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZDOTDIR:-$HOME}/omz/plugins/zsh-autosuggestions
 
   ## ZSH Autocomplete
   git clone https://github.com/marlonrichert/zsh-autocomplete ${ZDOTDIR:-$HOME}/omz/plugins/zsh-autocomplete
