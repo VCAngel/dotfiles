@@ -40,7 +40,7 @@ if [[ ! "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
 fi
 
 # Setup config files
-VCA_DOTFILES="$HOME/.vca_dotfiles"
+VCA_DOTFILES="$(pwd)"
 BACKUP_SUFFIX="pre-vca"
 
 ## X11
