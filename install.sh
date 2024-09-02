@@ -91,18 +91,15 @@ mkdir -p "$NVIM_DEST"
 for file in "$NVIM_SRC"/*; do
   base_file=$(basename "$file")
   backup_if_exists "$NVIM_DEST/$base_file"
-  cp -r "$file" "$NVIM_DEST/"
+  ln -sf "$file" "$NVIM_DEST/"
 done
-
-# Append "alias newlook=$VCA_DOTFILES/.local/bin/newlook" to ./config/omz/custom/aliases.zsh
-echo "alias newlook=$VCA_DOTFILES/.local/bin/newlook" >> "$OMZ_DEST/custom/aliases.zsh"
 
 # Copy OMZ files
 mkdir -p "$OMZ_DEST"
 for file in "$OMZ_SRC"/*; do
   base_file=$(basename "$file")
   backup_if_exists "$OMZ_DEST/$base_file"
-  cp -r "$file" "$OMZ_DEST/"
+  ln -sf "$file" "$OMZ_DEST/"
 done
 
 # Copy Tmuxinator files
@@ -110,7 +107,7 @@ mkdir -p "$TMUXINATOR_DEST"
 for file in "$TMUXINATOR_SRC"/*; do
   base_file=$(basename "$file")
   backup_if_exists "$TMUXINATOR_DEST/$base_file"
-  cp -r "$file" "$TMUXINATOR_DEST/"
+  ln -sf "$file" "$TMUXINATOR_DEST/"
 done
 
 mkdir -p "$IMAGES_DEST"
@@ -118,6 +115,17 @@ for file in "$IMAGES_SRC"/*; do
   base_file=$(basename "$file")
   backup_if_exists "$IMAGES_DEST/$base_file"
   cp -r "$file" "$IMAGES_DEST/"
+done
+
+# Create symlinks for .local/bin scripts
+if [ ! -d "$HOME/.local/bin" ]; then
+  mkdir -p "$HOME/.local/bin"
+fi
+
+for file in "$VCA_DOTFILES/.local/bin"/*; do
+  base_file=$(basename "$file")
+  backup_if_exists "$HOME/.local/bin/$base_file"
+  ln -sf "$file" "$HOME/.local/bin/"
 done
 
 # Check for errors and revert changes if any
