@@ -57,7 +57,7 @@ NVIM_DEST="$HOME/.config/nvim"
 
 ## Oh My ZSH
 OMZ_SRC="$VCA_DOTFILES/.config/omz"
-OMZ_DEST="$HOME/.config/oh-my-zsh"
+OMZ_DEST="$HOME/.config/omz"
 
 ## Tmuxinator
 TMUXINATOR_SRC="$VCA_DOTFILES/.config/tmuxinator"
