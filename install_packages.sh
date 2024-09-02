@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Install Oh My Zsh
-curl -fsSL "https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh
-
 # Detect the Linux distribution
 if [ -f /etc/os-release ]; then
   . /etc/os-release
@@ -53,5 +50,8 @@ arch)
   exit 1
   ;;
 esac
+
+# Install Oh My Zsh
+curl -fsSL "https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh
 
 printf "\n\n Packages installed successfully! ヽ(・∀・)ﾉ\n\n"
