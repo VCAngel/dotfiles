@@ -55,4 +55,9 @@ esac
 echo "\n\nInstalling Oh My Zsh...\n\n"
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+# # Check if the Oh My Zsh installation was successful
+if [ $? -ne 0 ]; then
+  echo "Failed to install Oh My Zsh. You can try to install it manually!"
+fi
+
 printf "\n\n Packages installed successfully! ヽ(・∀・)ﾉ\n\n"
