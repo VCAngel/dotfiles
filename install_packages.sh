@@ -51,4 +51,8 @@ arch)
   ;;
 esac
 
-printf "\n\n Packages installed successfully! ヽ(・∀・)ﾉ"
+# Install Oh My Zsh
+echo "\n\nInstalling Oh My Zsh...\n\n"
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+printf "\n\n Packages installed successfully! ヽ(・∀・)ﾉ\n\n"
