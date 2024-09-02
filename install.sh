@@ -63,6 +63,10 @@ OMZ_DEST="$HOME/.config/omz"
 TMUXINATOR_SRC="$VCA_DOTFILES/.config/tmuxinator"
 TMUXINATOR_DEST="$HOME/.config/tmuxinator"
 
+# Images
+IMAGES_SRC="$VCA_DOTFILES/imgs"
+IMAGES_DEST="$HOME/vca-imgs"
+
 # Function to create a backup if the file exists
 backup_if_exists() {
   local file=$1
@@ -103,10 +107,17 @@ for file in "$TMUXINATOR_SRC"/*; do
   cp -r "$file" "$TMUXINATOR_DEST/"
 done
 
+mkdir -p "$IMAGE_DEST"
+for file in "$IMAGES_SRC"/*; do
+  base_file=$(basename "$file")
+  backup_if_exists "$IMAGES_DEST/$base_file"
+  cp -r "$file" "$IMAGES_DEST/"
+done
+
 # Check for errors and revert changes if any
 if [ $? -ne 0 ]; then
   echo "An error occurred. Reverting changes..."
-  rm -rf "$NVIM_DEST" "$OMZ_DEST" "$TMUXINATOR_DEST"
+  rm -rf "$NVIM_DEST" "$OMZ_DEST" "$TMUXINATOR_DEST" "$IMAGES_DEST"
   if [ -f "$X11_BACKUP" ]; then
     mv "$X11_BACKUP" "$X11_DEST"
   fi
@@ -118,4 +129,3 @@ fi
 
 # Display success message
 echo "All done! ( ˙▿˙ )"
-
