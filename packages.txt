@@ -4,6 +4,7 @@ cmatrix
 deno
 fastfetch
 firefox
+fontconfig
 git
 github-cli
 htop
@@ -43,7 +44,9 @@ ttf-liberation
 ttf-nerd-fonts-symbols
 ttf-nerd-fonts-symbols-common
 
-# xorg
+# X11
+libx11
+libxft
 xorg
 xinit
 xcb-util
