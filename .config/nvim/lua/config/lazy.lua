@@ -49,6 +49,8 @@ require("lazy").setup({
     },
 })
 
+require("Comment").setup()
+
 -- require("sg").setup({
 --    enable_cody = true,
 --    accept_tos = true,
