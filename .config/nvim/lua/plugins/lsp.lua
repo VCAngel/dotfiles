@@ -1,5 +1,5 @@
 return {
-    -- tools
+    -- mason lsps
     {
         "williamboman/mason.nvim",
         opts = function(_, opts)
@@ -21,7 +21,7 @@ return {
         config = function() end,
     },
 
-    -- lsp servers
+    -- lsp config and servers
     {
         "neovim/nvim-lspconfig",
         dependencies = {
@@ -40,6 +40,15 @@ return {
                 end,
                 desc = "Goto Definition",
                 has = "definition",
+            }
+
+            local capabilities = require("cmp_nvim_lsp").default_capabilities(
+                vim.lsp.protocol.make_client_capabilities()
+            )
+            -- Add folding capabilities required by ufo.nvim
+            capabilities.textDocument.foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
             }
         end,
         opts = {
@@ -209,6 +218,8 @@ return {
             setup = {},
         },
     },
+
+    -- Typescript standalone LSP
     {
         "pmizio/typescript-tools.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },

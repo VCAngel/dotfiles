@@ -1,18 +1,6 @@
 return {
-    -- Create annotations with one keybind, and jump your cursor in the inserted annotation
-    {
-        "danymat/neogen",
-        keys = {
-            {
-                "<leader>cc",
-                function()
-                    require("neogen").generate({})
-                end,
-                desc = "Neogen Comment",
-            },
-        },
-        opts = { snippet_engine = "luasnip" },
-    },
+    -- Commenting plugin for nvim
+    { "numToStr/Comment.nvim", opts = {} },
 
     -- Incremental rename
     {
@@ -21,9 +9,46 @@ return {
         config = true,
     },
 
+    -- Ultra fold plugin! Provider is LSP
+    {
+        "kevinhwang91/nvim-ufo",
+        dependencies = { "kevinhwang91/promise-async" },
+        event = "BufRead",
+        keys = {
+            {
+                "zR",
+                function()
+                    require("ufo").openAllFolds()
+                end,
+            },
+            {
+                "zM",
+                function()
+                    require("ufo").closeAllFolds()
+                end,
+            },
+            {
+                "K",
+                function()
+                    local winid = require("ufo").peekFoldedLinesUnderCursor()
+                    if not winid then
+                        vim.lsp.buf.hover()
+                    end
+                end,
+            },
+        },
+        config = function()
+            vim.o.foldcolumn = "1"
+            vim.o.foldlevel = 99
+            vim.o.foldlevelstart = 99
+            vim.o.foldenable = true
+            require("ufo").setup()
+        end,
+    },
+
     -- Refactoring tool
     {
-        "ThePrimeagen/refactoring.nvim",
+        "ThePrimeagen/refactoring.nvim", -- Gr8 streamer btw! :D
         keys = {
             {
                 "<leader>r",
@@ -102,5 +127,17 @@ return {
             table.insert(opts.sources, { name = "emoji" })
             table.insert(opts.sources, { name = "cody" })
         end,
+    },
+
+    -- Dims inactive code portions
+    {
+        "folke/twilight.nvim",
+        opts = {
+            dimming = {
+                alpha = 0.33,
+                inactive = false,
+            },
+            treesitter = true,
+        },
     },
 }
