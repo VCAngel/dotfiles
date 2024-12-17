@@ -14,7 +14,7 @@ require("lazy").setup({
             import = "lazyvim.plugins",
             opts = { colorscheme = "catppuccin" },
         },
-        --! import any extras modules here
+        { import = "config.snacks" },
         -- {
         --    "sourcegraph/sg.nvim",
         --    dependencies = { "nvim-lua/plenary.nvim" },

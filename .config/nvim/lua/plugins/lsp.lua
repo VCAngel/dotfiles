@@ -1,9 +1,51 @@
+---@type LazySpec
 return {
+    ---@module 'blink.cmp'
+    {
+        "saghen/blink.cmp",
+        lazy = false, -- lazy loading handled internally
+        dependencies = { "L3MON4D3/LuaSnip", version = "v2.*" },
+        -- use a release tag to download pre-built binaries
+        version = "v0.*",
+
+        ---@type blink.cmp.Config
+        opts = {
+            enabled = function()
+                return true
+            end,
+            -- 'default' for mappings similar to built-in completion
+            -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
+            -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
+            -- see the "default configuration" section below for full documentation on how to define
+            -- your own keymap.
+            keymap = { preset = "enter" },
+            appearance = {
+                -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+                -- Adjusts spacing to ensure icons are aligned
+                nerd_font_variant = "mono",
+            },
+            -- default list of enabled providers defined so that you can extend it
+            -- elsewhere in your config, without redefining it, via `opts_extend`
+            sources = {
+                default = { "lsp", "path", "luasnip", "buffer" },
+                -- optionally disable cmdline completions
+                -- cmdline = {},
+            },
+
+            -- experimental signature help support
+            -- signature = { enabled = true }
+        },
+        -- allows extending the providers array elsewhere in your config
+        -- without having to redefine it
+        opts_extend = { "sources.default" },
+    },
+
     -- mason lsps
     {
         "williamboman/mason.nvim",
         opts = function(_, opts)
             vim.list_extend(opts.ensure_installed, {
+                "angular-language-server",
                 "stylua",
                 "selene",
                 "luacheck",
@@ -25,35 +67,30 @@ return {
     {
         "neovim/nvim-lspconfig",
         dependencies = {
+            "saghen/blink.cmp",
             "mason.nvim",
             "williamboman/mason-lspconfig.nvim",
         },
-        init = function()
-            local keys = require("lazyvim.plugins.lsp.keymaps").get()
-            keys[#keys + 1] = {
-                "gd",
-                function()
-                    -- DO NOT RESUSE WINDOW
-                    require("telescope.builtin").lsp_definitions({
-                        reuse_win = false,
-                    })
-                end,
-                desc = "Goto Definition",
-                has = "definition",
-            }
+        config = function(_, opts)
+            local lspconfig = require("lspconfig")
+            -- Configure each server inside `opts`
+            for server, config in pairs(opts.servers) do
+                -- passing config.capabilities to blink.cmp merges with the capabilities in
+                -- `opts[server].capabilities, if defined
 
-            local capabilities = require("cmp_nvim_lsp").default_capabilities(
-                vim.lsp.protocol.make_client_capabilities()
-            )
-            -- Add folding capabilities required by ufo.nvim
-            capabilities.textDocument.foldingRange = {
-                dynamicRegistration = false,
-                lineFoldingOnly = true,
-            }
+                config.capabilities = require("blink.cmp").get_lsp_capabilities(
+                    config.capabilities
+                )
+                config.capabilities.textDocument.foldingRange = {
+                    dynamicRegistration = false,
+                    lineFoldingOnly = true,
+                }
+                lspconfig[server].setup(config)
+            end
         end,
         opts = {
             inlay_hints = { enabled = true },
-            ---@type lspconfig.options
+            ---@type  table<lspconfig.Config>
             servers = {
                 cssls = {},
                 tailwindcss = {
@@ -63,6 +100,7 @@ return {
                         )
                     end,
                 },
+                ---@type lspconfig.Config
                 denols = {
                     cmd = { "deno", "lsp" },
                     cmd_env = { NO_COLOR = true },
@@ -74,11 +112,16 @@ return {
                         "typescriptreact",
                         "typescript.tsx",
                     },
-                    root_dir = function(...)
-                        return require("lspconfig.util").root_pattern(
-                            "deno.json",
-                            "deno.jsonc"
-                        )(...)
+                    root_dir = require("lspconfig.util").root_pattern(
+                        "deno.json",
+                        "deno.jsonc"
+                    ),
+                    on_attach = function()
+                        LazyVim.notify("Attached...", {
+                            level = 2,
+                            title = "denols",
+                            stacklevel = 3,
+                        })
                     end,
                     settings = {
                         deno = {
@@ -88,55 +131,14 @@ return {
                                 imports = {
                                     hosts = {
                                         ["https://deno.land"] = true,
-                                        ["https://jsr.io/"] = true,
+                                        ["https://jsr.io"] = true,
+                                        ["https://npmjs.com"] = true,
                                     },
                                 },
                             },
                         },
                     },
-                },
-                tsserver = {
-                    root_dir = function(...)
-                        local denoRootDir =
-                            require("lspconfig.util").root_pattern(
-                                "deno.json",
-                                "deno.jsonc"
-                            )(...)
-                        if denoRootDir then
-                            return nil
-                        end
-
-                        return require("lspconfig.util").root_pattern(
-                            "package.json",
-                            "tsconfig.json",
-                            "jsconfig.json"
-                        )(...)
-                    end,
                     single_file_support = false,
-                    settings = {
-                        typescript = {
-                            inlayHints = {
-                                includeInlayParameterNameHints = "literal",
-                                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                                includeInlayFunctionParameterTypeHints = true,
-                                includeInlayVariableTypeHints = false,
-                                includeInlayPropertyDeclarationTypeHints = true,
-                                includeInlayFunctionLikeReturnTypeHints = true,
-                                includeInlayEnumMemberValueHints = true,
-                            },
-                        },
-                        javascript = {
-                            inlayHints = {
-                                includeInlayParameterNameHints = "all",
-                                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                                includeInlayFunctionParameterTypeHints = true,
-                                includeInlayVariableTypeHints = true,
-                                includeInlayPropertyDeclarationTypeHints = true,
-                                includeInlayFunctionLikeReturnTypeHints = true,
-                                includeInlayEnumMemberValueHints = true,
-                            },
-                        },
-                    },
                 },
                 html = {},
                 yamlls = {
@@ -147,7 +149,6 @@ return {
                     },
                 },
                 lua_ls = {
-                    -- enabled = false,
                     single_file_support = true,
                     settings = {
                         Lua = {
@@ -159,9 +160,7 @@ return {
                                 callSnippet = "Both",
                             },
                             misc = {
-                                parameters = {
-                                    -- "--log-level=trace",
-                                },
+                                parameters = {},
                             },
                             hint = {
                                 enable = true,
@@ -182,7 +181,6 @@ return {
                                     "incomplete-signature-doc",
                                     "trailing-space",
                                 },
-                                -- enable = false,
                                 groupSeverity = {
                                     strong = "Warning",
                                     strict = "Warning",
@@ -202,20 +200,61 @@ return {
                                     ["unused"] = "Opened",
                                 },
                                 unusedLocalExclude = { "_*" },
+                                globals = {
+                                    "vim",
+                                    "require",
+                                    "use",
+                                    "use_rocks",
+                                    "use_batteries",
+                                },
                             },
                             format = {
-                                enable = false,
+                                enable = true,
                                 defaultConfig = {
                                     indent_style = "space",
                                     indent_size = "2",
                                     continuation_indent_size = "2",
                                 },
                             },
+                            runtime = { version = "LuaJIT" },
                         },
                     },
                 },
+                angularls = {},
             },
-            setup = {},
+            setup = {
+                denols = function(_, opts)
+                    LazyVim.lsp.on_attach(function(client)
+                        local util = require("lspconfig.util")
+                        local root = client.root_dir
+                        -- Only start if we're in a Deno project
+                        if
+                            not util.root_pattern("deno.json", "deno.jsonc")(
+                                root
+                            )
+                        then
+                            return
+                        end
+
+                        -- Stop any running tsserver instance
+                        local active_clients = LazyVim.lsp.get_clients()
+                        for _, ac in ipairs(active_clients) do
+                            if ac.name == "tsserver" and ac.initialized then
+                                ac.stop()
+                            end
+                        end
+                    end, "denols")
+                end,
+
+                angularls = function()
+                    LazyVim.lsp.on_attach(function(client)
+                        --HACK: disable angular renaming capability due to duplicate rename popping up
+                        client.server_capabilities.renameProvider = false
+                        client.server_capabilities.documentFormattingProvider =
+                            false
+                    end, "angularls")
+                end,
+            },
         },
     },
 
@@ -223,6 +262,24 @@ return {
     {
         "pmizio/typescript-tools.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-        opts = {},
+        ---@type lspconfig.Config
+        opts = {
+            single_file_support = false,
+            on_attach = function()
+                LazyVim.notify("Attached...", {
+                    level = 2,
+                    title = "typescript-tools",
+                    stacklevel = 3,
+                })
+            end,
+
+            settings = {
+                separate_diagnostic_server = true,
+                tsserver_logs = "verbose",
+                tsserver_plugins = {
+                    "@angular/language-server",
+                },
+            },
+        },
     },
 }

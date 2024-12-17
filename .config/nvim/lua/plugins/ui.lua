@@ -24,16 +24,7 @@ return {
             }
         end,
         dependencies = {
-            "rcarriga/nvim-notify",
-        },
-    },
-
-    {
-        "rcarriga/nvim-notify",
-        opts = {
-            timeout = 5000,
-            background_colour = "#ffffff",
-            render = "wrapped-compact",
+            "folke/snacks.nvim",
         },
     },
 
@@ -55,44 +46,5 @@ return {
             },
             highlights = require("catppuccin.groups.integrations.bufferline").get(),
         },
-    },
-
-    {
-        "folke/zen-mode.nvim",
-        cmd = "ZenMode",
-        opts = {
-            plugins = {
-                gitsigns = true,
-                tmux = true,
-                kitty = { enabled = false, font = "+2" },
-            },
-        },
-        keys = { { "<leader>z", "<cmd>ZenMode<cr>", desc = "Zen Mode" } },
-    },
-
-    {
-        "nvimdev/dashboard-nvim",
-        event = "VimEnter",
-        opts = function(_, opts)
-            local logo = [[
-                                                  __ 
- _ _ _     _                      _           _  |  |
-| | | |___| |___ ___ _____ ___   | |_ ___ ___| |_|  |
-| | | | -_| |  _| . |     | -_|  | . | .'|  _| '_|__|
-|_____|___|_|___|___|_|_|_|___|  |___|__,|___|_,_|__|
-                                                     
-
-██╗   ██╗ ██████╗ █████╗ ███╗   ██╗ ██████╗ ███████╗██╗     
-██║   ██║██╔════╝██╔══██╗████╗  ██║██╔════╝ ██╔════╝██║     
-██║   ██║██║     ███████║██╔██╗ ██║██║  ███╗█████╗  ██║     
-╚██╗ ██╔╝██║     ██╔══██║██║╚██╗██║██║   ██║██╔══╝  ██║     
- ╚████╔╝ ╚██████╗██║  ██║██║ ╚████║╚██████╔╝███████╗███████╗
-  ╚═══╝   ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚══════╝
-                                                            
-      ]]
-
-            logo = string.rep("\n", 8) .. logo .. "\n\n"
-            opts.config.header = vim.split(logo, "\n")
-        end,
     },
 }
