@@ -26,7 +26,7 @@ keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
 keymap.set("n", "ss", ":split<Return>", opts)
 keymap.set("n", "sv", ":vsplit<Return>", opts)
 
--- Move window
+-- Change window
 keymap.set("n", "sh", "<C-w>h")
 keymap.set("n", "sk", "<C-w>k")
 keymap.set("n", "sj", "<C-w>j")
@@ -43,5 +43,48 @@ keymap.set("n", "sq", ":close<Return>", opts)
 
 -- Diagnostics
 keymap.set("n", "<C-j>", function()
-  vim.diagnostic.goto_next()
+    vim.diagnostic.goto_next()
 end, opts)
+
+-- Plugins
+-- > fzf_lua
+keymap.set(
+    "n",
+    "gd",
+    "<cmd>FzfLua lsp_definitions     jump_to_single_result=true ignore_current_line=true<cr>",
+    {
+        desc = "Goto Definition",
+        unpack(opts),
+    }
+)
+
+keymap.set(
+    "n",
+    "gr",
+    "<cmd>FzfLua lsp_references     jump_to_single_result=true ignore_current_line=true<cr>",
+    {
+        desc = "References",
+        nowait = true,
+        unpack(opts),
+    }
+)
+
+keymap.set(
+    "n",
+    "gI",
+    "<cmd>FzfLua lsp_implementations     jump_to_single_result=true ignore_current_line=true<cr>",
+    {
+        desc = "Goto Implementation",
+        unpack(opts),
+    }
+)
+
+keymap.set(
+    "n",
+    "gy",
+    "<cmd>FzfLua lsp_typedefs     jump_to_single_result=true ignore_current_line=true<cr>",
+    {
+        desc = "Goto T[y]pe Definition",
+        unpack(opts),
+    }
+)
