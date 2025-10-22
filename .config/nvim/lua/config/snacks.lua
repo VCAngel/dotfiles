@@ -13,7 +13,6 @@ return {
     lazy = false,
     ---@type snacks.Config
     opts = {
-        ---@type snacks.animate.Config
         animate = {
             duration = 20, -- ms per step
             easing = "inQuad",
@@ -83,7 +82,7 @@ return {
                     { text = "", height = 5, padding = 14 },
                     {
                         section = "terminal",
-                        cmd = "fortune linux computers -n 128 -s | sed '/^[[:space:]]*--/d' | cowsay -f dedo | lolcat -a -s 256",
+                        cmd = "fortune -n 128 -s computers linuxcookie cookie | sed '/^[[:space:]]*--/d' | cowsay -f dedo | lolcat -a -s 256",
                         height = 16,
                         indent = 10,
                         ttl = 2,

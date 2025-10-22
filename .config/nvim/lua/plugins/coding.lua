@@ -68,7 +68,7 @@ return {
 
     -- Go forward/backward with square brackets
     {
-        "echasnovski/mini.bracketed",
+        "nvim-mini/mini.bracketed",
         event = "BufReadPost",
         config = function()
             local bracketed = require("mini.bracketed")
@@ -97,5 +97,10 @@ return {
                 -- Your setup opts here (leave empty to use defaults)
             })
         end,
+    },
+
+    -- Json utils
+    {
+        "2nthony/sortjson.nvim",
     },
 }

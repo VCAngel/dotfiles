@@ -3,20 +3,32 @@ return {
         "catppuccin/nvim",
         name = "catppuccin",
         priority = 1000,
-        opts = function()
+        opts = function(_, opts)
+            -- workaround for `bufferline` intergration
+            local bufferline = require("catppuccin.special.bufferline")
+            bufferline.get = bufferline.get or bufferline.get_theme
+
             return {
                 flavour = "mocha",
                 transparent_background = true,
                 dim_inactive = {
                     enabled = false,
                     shade = "dark",
-                    percentage = 0.1,
+                    percentage = 0.2,
                 },
                 styles = {
                     comments = { "italic" },
                     keywords = { "bold" },
                 },
                 color_overrides = {},
+                lsp_styles = {
+                    underlines = {
+                        errors = { "undercurl" },
+                        hints = { "undercurl" },
+                        warnings = { "undercurl" },
+                        information = { "undercurl" },
+                    },
+                },
                 integrations = {
                     cmp = true,
                     gitsigns = true,
@@ -41,4 +53,11 @@ return {
             }
         end,
     },
+
+    -- pywal colorscheme extraction
+    --[[ {
+        "dylanaraps/wal.vim",
+        name = "wal",
+        priority = 1000,
+    }, ]]
 }
