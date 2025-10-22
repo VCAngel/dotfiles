@@ -38,12 +38,15 @@ keymap.set("n", "<C-w><right>", "<C-w>>")
 keymap.set("n", "<C-w><up>", "<C-w>+")
 keymap.set("n", "<C-w><down>", "<C-w>-")
 
--- Manage window
+-- Manage windows
 keymap.set("n", "sq", ":close<Return>", opts)
 
 -- Diagnostics
 keymap.set("n", "<C-j>", function()
     vim.diagnostic.goto_next()
+end, opts)
+keymap.set("n", "<C-k>", function()
+    vim.diagnostic.goto_prev()
 end, opts)
 
 -- Plugins
@@ -53,7 +56,7 @@ keymap.set(
     "gd",
     "<cmd>FzfLua lsp_definitions     jump_to_single_result=true ignore_current_line=true<cr>",
     {
-        desc = "Goto Definition",
+        desc = "[G]oto [D]efinition",
         unpack(opts),
     }
 )
@@ -63,7 +66,7 @@ keymap.set(
     "gr",
     "<cmd>FzfLua lsp_references     jump_to_single_result=true ignore_current_line=true<cr>",
     {
-        desc = "References",
+        desc = "[G]oto [R]eferences",
         nowait = true,
         unpack(opts),
     }
@@ -74,7 +77,7 @@ keymap.set(
     "gI",
     "<cmd>FzfLua lsp_implementations     jump_to_single_result=true ignore_current_line=true<cr>",
     {
-        desc = "Goto Implementation",
+        desc = "[G]oto [I]mplementation",
         unpack(opts),
     }
 )
@@ -84,7 +87,33 @@ keymap.set(
     "gy",
     "<cmd>FzfLua lsp_typedefs     jump_to_single_result=true ignore_current_line=true<cr>",
     {
-        desc = "Goto T[y]pe Definition",
+        desc = "[G]oto T[y]pe Definition",
         unpack(opts),
     }
 )
+
+-- > vtsls
+keymap.set("n", "<leader>co", LazyVim.lsp.action["source.organizeImports"], {
+    desc = "Organize Imports",
+    unpack(opts),
+})
+
+keymap.set(
+    "n",
+    "<leader>cM",
+    LazyVim.lsp.action["source.addMissingImports.ts"],
+    {
+        desc = "Add missing imports",
+        unpack(opts),
+    }
+)
+
+keymap.set("n", "<leader>cu", LazyVim.lsp.action["source.removeUnused.ts"], {
+    desc = "Remove unused imports",
+    unpack(opts),
+})
+
+keymap.set("n", "<leader>cD", LazyVim.lsp.action["source.fixAll.ts"], {
+    desc = "Fix all diagnostic",
+    unpack(opts),
+})

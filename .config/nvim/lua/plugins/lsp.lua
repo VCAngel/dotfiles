@@ -1,13 +1,16 @@
+local function getParentDir(buffer, markers) end
+
 ---@type LazySpec
 return {
     ---@module 'blink.cmp'
     {
         "saghen/blink.cmp",
         lazy = false, -- lazy loading handled internally
-        dependencies = { "L3MON4D3/LuaSnip", version = "v2.*" },
+        dependencies = "rafamadriz/friendly-snippets",
         -- use a release tag to download pre-built binaries
-        version = "v0.*",
+        version = "*",
 
+        ---@module 'blink.cmp'
         ---@type blink.cmp.Config
         opts = {
             enabled = function()
@@ -24,10 +27,16 @@ return {
                 -- Adjusts spacing to ensure icons are aligned
                 nerd_font_variant = "mono",
             },
+
+            -- Show the documentation window automatically
+            completion = {
+                documentation = { auto_show = true, auto_show_delay_ms = 3000 },
+            },
+
             -- default list of enabled providers defined so that you can extend it
             -- elsewhere in your config, without redefining it, via `opts_extend`
             sources = {
-                default = { "lsp", "path", "luasnip", "buffer" },
+                default = { "lsp", "path", "snippets", "buffer" },
                 -- optionally disable cmdline completions
                 -- cmdline = {},
             },
@@ -42,65 +51,67 @@ return {
 
     -- mason lsps
     {
-        "williamboman/mason.nvim",
-        opts = function(_, opts)
-            vim.list_extend(opts.ensure_installed, {
-                "angular-language-server",
-                "stylua",
-                "selene",
-                "luacheck",
-                "shellcheck",
-                "shfmt",
-                "tailwindcss-language-server",
-                "deno",
-                "css-lsp",
-            })
-        end,
+        "mason-org/mason.nvim",
+        opts = {},
     },
 
     {
-        "williamboman/mason-lspconfig.nvim",
-        config = function() end,
+        "mason-org/mason-lspconfig.nvim",
+        dependiencies = {
+            "mason-org/mason.nvim",
+            "neovim/nvim-lspconfig",
+            "saghen/blink.cmp",
+        },
+        opts = {
+            ensure_installed = {
+                "lua_ls",
+                "vtsls",
+                "denols",
+                "angularls",
+                "bashls",
+                "copilot",
+                "cssls",
+                "jsonls",
+                "rust_analyzer",
+                "stylua",
+                "tailwindcss",
+                "yamlls",
+            },
+        },
     },
 
     -- lsp config and servers
     {
         "neovim/nvim-lspconfig",
         dependencies = {
+            "mason-org/mason.nvim",
+            "mason-org/mason-lspconfig.nvim",
             "saghen/blink.cmp",
-            "mason.nvim",
-            "williamboman/mason-lspconfig.nvim",
         },
-        config = function(_, opts)
-            local lspconfig = require("lspconfig")
-            -- Configure each server inside `opts`
-            for server, config in pairs(opts.servers) do
-                -- passing config.capabilities to blink.cmp merges with the capabilities in
-                -- `opts[server].capabilities, if defined
-
-                config.capabilities = require("blink.cmp").get_lsp_capabilities(
-                    config.capabilities
-                )
-                config.capabilities.textDocument.foldingRange = {
-                    dynamicRegistration = false,
-                    lineFoldingOnly = true,
-                }
-                lspconfig[server].setup(config)
-            end
-        end,
         opts = {
             inlay_hints = { enabled = true },
-            ---@type  table<lspconfig.Config>
+            ---@type  table<vim.lsp.Config>
             servers = {
                 cssls = {},
+                ---@type vim.lsp.Config
                 tailwindcss = {
-                    root_dir = function(...)
-                        return require("lspconfig.util").root_pattern(".git")(
-                            ...
-                        )
+                    root_dir = function(bufnr, on_dir)
+                        local root = vim.fs.root(bufnr, {
+                            "tailwind.config.js",
+                            "tailwind.config.cjs",
+                            "tailwind.config.mjs",
+                            "tailwind.config.ts",
+                            "postcss.config.js",
+                            "postcss.config.cjs",
+                            "postcss.config.mjs",
+                            "postcss.config.ts",
+                        })
+                        if root then
+                            on_dir(root)
+                        end
                     end,
                 },
-                ---@type lspconfig.Config
+                ---@type vim.lsp.Config
                 denols = {
                     cmd = { "deno", "lsp" },
                     cmd_env = { NO_COLOR = true },
@@ -112,10 +123,16 @@ return {
                         "typescriptreact",
                         "typescript.tsx",
                     },
-                    root_dir = require("lspconfig.util").root_pattern(
-                        "deno.json",
-                        "deno.jsonc"
-                    ),
+                    root_dir = function(bufnr, on_dir)
+                        local root = vim.fs.root(bufnr, {
+                            "deno.json",
+                            "deno.jsonc",
+                        })
+
+                        if root then
+                            on_dir(root)
+                        end
+                    end,
                     on_attach = function()
                         LazyVim.notify("Attached...", {
                             level = 2,
@@ -138,9 +155,37 @@ return {
                             },
                         },
                     },
-                    single_file_support = false,
+                    workspace_required = true,
                 },
-                html = {},
+
+                ---@type vim.lsp.Config
+                vtsls = {
+                    on_attach = function(client)
+                        LazyVim.notify("Attached...", {
+                            level = 2,
+                            title = "vtsls",
+                            stacklevel = 3,
+                        })
+                    end,
+                    cmd = { "vtsls", "--stdio" },
+                    filetypes = {
+                        "javascript",
+                        "typescript",
+                        "javascriptreact",
+                        "typescriptreact",
+                    },
+                    root_dir = function(bufnr, on_dir)
+                        local root = vim.fs.root(bufnr, {
+                            "package.json",
+                            "package.jsonc",
+                        })
+
+                        if root then
+                            on_dir(root)
+                        end
+                    end,
+                    workspace_required = true,
+                },
                 yamlls = {
                     settings = {
                         yaml = {
@@ -154,6 +199,11 @@ return {
                         Lua = {
                             workspace = {
                                 checkThirdParty = false,
+                                library = {
+                                    unpack(
+                                        vim.api.nvim_get_runtime_file("", true)
+                                    ),
+                                },
                             },
                             completion = {
                                 workspaceWord = true,
@@ -220,64 +270,35 @@ return {
                         },
                     },
                 },
-                angularls = {},
-            },
-            setup = {
-                denols = function(_, opts)
-                    LazyVim.lsp.on_attach(function(client)
-                        local util = require("lspconfig.util")
-                        local root = client.root_dir
-                        -- Only start if we're in a Deno project
-                        if
-                            not util.root_pattern("deno.json", "deno.jsonc")(
-                                root
-                            )
-                        then
-                            return
-                        end
-
-                        -- Stop any running tsserver instance
-                        local active_clients = LazyVim.lsp.get_clients()
-                        for _, ac in ipairs(active_clients) do
-                            if ac.name == "tsserver" and ac.initialized then
-                                ac.stop()
-                            end
-                        end
-                    end, "denols")
-                end,
-
-                angularls = function()
-                    LazyVim.lsp.on_attach(function(client)
-                        --HACK: disable angular renaming capability due to duplicate rename popping up
+                ---@type vim.lsp.Config
+                angularls = {
+                    filetypes = {
+                        "html",
+                        "typescript",
+                    },
+                    on_attach = function(client)
+                        -- HACK: disable angular renaming capability due to duplicate rename popping up
                         client.server_capabilities.renameProvider = false
                         client.server_capabilities.documentFormattingProvider =
                             false
-                    end, "angularls")
-                end,
-            },
-        },
-    },
 
-    -- Typescript standalone LSP
-    {
-        "pmizio/typescript-tools.nvim",
-        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-        ---@type lspconfig.Config
-        opts = {
-            single_file_support = false,
-            on_attach = function()
-                LazyVim.notify("Attached...", {
-                    level = 2,
-                    title = "typescript-tools",
-                    stacklevel = 3,
-                })
-            end,
+                        LazyVim.notify("Attached...", {
+                            level = 2,
+                            title = client.name,
+                            stacklevel = 3,
+                        })
+                    end,
+                    root_dir = function(bufnr, on_dir)
+                        local root = vim.fs.root(bufnr, {
+                            "angular.json",
+                            "angular.jsonc",
+                        })
 
-            settings = {
-                separate_diagnostic_server = true,
-                tsserver_logs = "verbose",
-                tsserver_plugins = {
-                    "@angular/language-server",
+                        if root then
+                            on_dir(root)
+                        end
+                    end,
+                    workspace_required = true,
                 },
             },
         },
