@@ -54,10 +54,13 @@ return {
         end,
     },
 
-    -- pywal colorscheme extraction
-    --[[ {
-        "dylanaraps/wal.vim",
-        name = "wal",
+    -- WIP: currently cooking
+    -- wallust|pywal|imagemagick colorscheme generator
+    --[[ 
+    {
+        "VCAngel/chameleon.nvim",
+        name = "chameleon",
         priority = 1000,
-    }, ]]
+    },
+    ]]
 }
