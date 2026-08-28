@@ -1,4 +1,14 @@
-local function getParentDir(buffer, markers) end
+--- Helper function to get the parent directory based on markers
+---@param buffer number
+---@param markers string[]
+---@param on_dir fun(root_dir?: string)
+local function getParentDir(buffer, markers, on_dir)
+    local root = vim.fs.root(buffer, markers)
+
+    if root then
+        on_dir(root)
+    end
+end
 
 ---@type LazySpec
 return {
@@ -67,7 +77,6 @@ return {
                 "lua_ls",
                 "vtsls",
                 "denols",
-                "angularls",
                 "bashls",
                 "copilot",
                 "cssls",
@@ -96,7 +105,7 @@ return {
                 ---@type vim.lsp.Config
                 tailwindcss = {
                     root_dir = function(bufnr, on_dir)
-                        local root = vim.fs.root(bufnr, {
+                        getParentDir(bufnr, {
                             "tailwind.config.js",
                             "tailwind.config.cjs",
                             "tailwind.config.mjs",
@@ -105,10 +114,7 @@ return {
                             "postcss.config.cjs",
                             "postcss.config.mjs",
                             "postcss.config.ts",
-                        })
-                        if root then
-                            on_dir(root)
-                        end
+                        }, on_dir)
                     end,
                 },
                 ---@type vim.lsp.Config
@@ -124,21 +130,19 @@ return {
                         "typescript.tsx",
                     },
                     root_dir = function(bufnr, on_dir)
-                        local root = vim.fs.root(bufnr, {
+                        getParentDir(bufnr, {
                             "deno.json",
                             "deno.jsonc",
-                        })
-
-                        if root then
-                            on_dir(root)
-                        end
+                        }, on_dir)
                     end,
-                    on_attach = function()
-                        LazyVim.notify("Attached...", {
-                            level = 2,
-                            title = "denols",
-                            stacklevel = 3,
-                        })
+                    on_error = function(code, error)
+                        Snacks.notify.error(
+                            "[" .. code .. "]" .. vim.inspect(error),
+                            {
+                                title = "denols",
+                                stacklevel = 3,
+                            }
+                        )
                     end,
                     settings = {
                         deno = {
@@ -160,12 +164,14 @@ return {
 
                 ---@type vim.lsp.Config
                 vtsls = {
-                    on_attach = function(client)
-                        LazyVim.notify("Attached...", {
-                            level = 2,
-                            title = "vtsls",
-                            stacklevel = 3,
-                        })
+                    on_error = function(code, error)
+                        Snacks.notify.error(
+                            "[" .. code .. "]" .. vim.inspect(error),
+                            {
+                                title = "vtsls",
+                                stacklevel = 3,
+                            }
+                        )
                     end,
                     cmd = { "vtsls", "--stdio" },
                     filetypes = {
@@ -175,14 +181,10 @@ return {
                         "typescriptreact",
                     },
                     root_dir = function(bufnr, on_dir)
-                        local root = vim.fs.root(bufnr, {
+                        getParentDir(bufnr, {
                             "package.json",
                             "package.jsonc",
-                        })
-
-                        if root then
-                            on_dir(root)
-                        end
+                        }, on_dir)
                     end,
                     workspace_required = true,
                 },
@@ -272,31 +274,53 @@ return {
                 },
                 ---@type vim.lsp.Config
                 angularls = {
+                    enabled = true,
+                    -- tsProveLocations and ngProbeLocations should include paths to
+                    -- node_modules folders that contain the
+                    -- @angular/language-server and typescript packages respectively.
+                    cmd = {
+                        "ngserver",
+                        "--stdio",
+                        "--tsProbeLocations",
+                        vim.fn.stdpath("data")
+                            .. "/mason/packages/angular-language-server/node_modules,"
+                            .. vim.fn.getcwd()
+                            .. "/node_modules",
+                        "--ngProbeLocations",
+                        vim.fn.stdpath("data")
+                            .. "/mason/packages/angular-language-server/node_modules/@angular/language-server/node_modules"
+                            .. vim.fn.getcwd()
+                            .. "/node_modules/@angular/language-server/node_modules",
+                        "--angularCoreVersion",
+                        "$(ng version | grep 'Angular CLI:' | awk '{print $3}')",
+                    },
+                    cmd_env = {
+                        NODE_OPTIONS = "--max-old-space-size=8192",
+                    },
                     filetypes = {
-                        "html",
                         "typescript",
+                        "htmlangular",
+                        "typescriptreact",
+                        "typescript.tsx",
                     },
                     on_attach = function(client)
-                        -- HACK: disable angular renaming capability due to duplicate rename popping up
                         client.server_capabilities.renameProvider = false
                         client.server_capabilities.documentFormattingProvider =
                             false
-
-                        LazyVim.notify("Attached...", {
-                            level = 2,
-                            title = client.name,
-                            stacklevel = 3,
-                        })
+                    end,
+                    on_error = function(code, error)
+                        Snacks.notify.error(
+                            "[" .. code .. "]" .. vim.inspect(error),
+                            {
+                                title = "angularls",
+                                stacklevel = 3,
+                            }
+                        )
                     end,
                     root_dir = function(bufnr, on_dir)
-                        local root = vim.fs.root(bufnr, {
+                        getParentDir(bufnr, {
                             "angular.json",
-                            "angular.jsonc",
-                        })
-
-                        if root then
-                            on_dir(root)
-                        end
+                        }, on_dir)
                     end,
                     workspace_required = true,
                 },

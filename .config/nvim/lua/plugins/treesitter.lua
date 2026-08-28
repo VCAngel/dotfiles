@@ -29,6 +29,7 @@ return {
                 "kotlin",
                 "lua",
                 "php",
+                "prisma",
                 "python",
                 "regex",
                 "rust",

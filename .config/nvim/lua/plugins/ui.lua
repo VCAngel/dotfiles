@@ -70,7 +70,7 @@ return {
         config = function()
             require("presence"):setup({
                 auto_update = true,
-                neovim_image_text = "nvim my beloved (´｡• ω •｡`) ♡",
+                neovim_image_text = "help how do i exit vim?!?!?",
                 main_image = "neovim",
                 log_level = nil,
                 debounce_timeout = 10,
@@ -82,7 +82,7 @@ return {
                 -- displayed texts
                 workspace_text = "▪ [ vibing | %s ]", -- Format string rendered when in a git repository (either string or function(project_name: string|nil, filename: string): string)
                 editing_text = "└> :edit %s", -- Format string rendered when an editable file is loaded in the buffer (either string or function(filename: string): string)
-                file_explorer_text = "└> :Explore %s", -- Format string rendered when browsing a file explorer (either string or function(file_explorer_name: string): string)
+                file_explorer_text = "└> :Explore", -- Format string rendered when browsing a file explorer (either string or function(file_explorer_name: string): string)
                 git_commit_text = "└[ committing ]", -- Format string rendered when committing changes in git (either string or function(filename: string): string)
                 plugin_manager_text = "└[ tunin' nvim ]", -- Format string rendered when managing plugins (either string or function(plugin_manager_name: string): string)
                 reading_text = "└> :view %s", -- Format string rendered when a read-only or unmodifiable file is loaded in the buffer (either string or function(filename: string): string)
