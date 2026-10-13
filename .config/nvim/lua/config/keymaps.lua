@@ -9,7 +9,7 @@ keymap.set("n", "+", "<C-a>")
 keymap.set("n", "-", "<C-x>")
 
 -- Delete a word backwards
-keymap.set("n", "<A-BS>", "vbd")
+keymap.set("n", "<A-BS>", "bd")
 
 -- Select all
 keymap.set("n", "<C-a>", "gg<S-v>G")
@@ -19,6 +19,7 @@ keymap.set("n", "<C-m>", "<C-i>", opts)
 
 -- New tab
 keymap.set("n", "te", ":tabedit", opts)
+keymap.set("n", "tm", ":tabmove", opts)
 keymap.set("n", "<tab>", ":tabnext<Return>", opts)
 keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
 
@@ -43,14 +44,23 @@ keymap.set("n", "sq", ":close<Return>", opts)
 
 -- Diagnostics
 keymap.set("n", "<C-j>", function()
-    vim.diagnostic.goto_next()
+    vim.diagnostic.jump({ count = 1, float = true })
 end, opts)
 keymap.set("n", "<C-k>", function()
-    vim.diagnostic.goto_prev()
+    vim.diagnostic.jump({ count = -1, float = true })
 end, opts)
 
 -- Plugins
--- > fzf_lua
+-- > fzf_lua "<leader>f"
+keymap.set(
+  "n", "<leader>f<Enter>", "<cmd>FzfLua<cr>",
+  {
+    desc = "[G]oto",
+    unpack(opts),
+  }
+)
+
+-- > goto-s
 keymap.set(
     "n",
     "gd",
