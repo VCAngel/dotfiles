@@ -40,6 +40,10 @@ luac.out
 *.x86_64
 *.hex
 
+# git
+# Ignore worktrees/local-dots. It continains local running configuration, no need to track it.
+.worktrees/
+
 # MISC
 .vscode
 tt.*
