@@ -20,12 +20,14 @@ return {
                 function()
                     require("ufo").openAllFolds()
                 end,
+                desc = "Open all folds",
             },
             {
                 "zM",
                 function()
                     require("ufo").closeAllFolds()
                 end,
+                desc = "Close all folds",
             },
             {
                 "K",
@@ -35,6 +37,7 @@ return {
                         vim.lsp.buf.hover()
                     end
                 end,
+                desc = "Peek fold / Hover",
             },
         },
         config = function()
@@ -58,6 +61,7 @@ return {
                     })
                 end,
                 mode = "v",
+                desc = "Refactor",
                 noremap = true,
                 silent = true,
                 expr = false,
@@ -84,19 +88,8 @@ return {
 
     {
         "hedyhli/outline.nvim",
-        config = function()
-            -- Example mapping to toggle outline
-            vim.keymap.set(
-                "n",
-                "<leader>o",
-                "<cmd>Outline<CR>",
-                { desc = "Toggle Outline" }
-            )
-
-            require("outline").setup({
-                -- Your setup opts here (leave empty to use defaults)
-            })
-        end,
+        -- <leader>o keymap lives in `which-key.lua`
+        opts = {},
     },
 
     -- Json utils
